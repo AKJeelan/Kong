@@ -1,0 +1,456 @@
+Authentication Notes: Basic Auth vs JWT vs OAuth 2.0
+
+A complete developer guide with concepts, examples, use cases, and interview notes.
+
+Table of Contents
+Introduction
+Basic Auth
+JWT Authentication
+OAuth 2.0
+Comparison Table
+Real-World Examples
+When to Use What
+Interview Summary
+1. Introduction
+
+Authentication and authorization are common topics in backend development.
+
+Many developers confuse:
+
+Basic Auth
+JWT
+OAuth 2.0
+
+They solve different problems.
+
+Basic Auth = username/password based access
+JWT = token-based authentication
+OAuth 2.0 = delegated authorization framework
+2. Basic Auth
+What is Basic Auth?
+
+Basic Authentication is an HTTP authentication method where the client sends username and password with every request.
+
+How It Works
+
+Client sends:
+
+Authorization: Basic base64(username:password)
+
+Example:
+
+Authorization: Basic YWRtaW46MTIzNDU2
+
+(Base64 of admin:123456)
+
+Request Example
+GET /api/users
+Authorization: Basic YWRtaW46MTIzNDU2
+Server Side
+
+Server decodes Base64:
+
+admin:123456
+
+Then checks database.
+
+Advantages
+Very simple
+Easy to implement
+No token handling
+Good for internal systems
+Disadvantages
+Password sent every request
+Base64 is encoding, not encryption
+Must use HTTPS
+No expiry
+No granular permissions
+Best Use Cases
+Internal admin tools
+Testing APIs
+Small trusted systems
+3. JWT Authentication
+What is JWT?
+
+JWT = JSON Web Token
+
+A signed token issued after login.
+
+Instead of sending password every request, client sends token.
+
+JWT Structure
+header.payload.signature
+
+Example:
+
+eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjF9.signature
+Login Flow
+Step 1
+
+User logs in:
+
+POST /login
+{
+  "email": "user@test.com",
+  "password": "123456"
+}
+Step 2
+
+Server validates credentials.
+
+Step 3
+
+Server returns token:
+
+{
+  "token": "jwt_token_here"
+}
+Step 4
+
+Client sends token:
+
+Authorization: Bearer jwt_token_here
+Server Verification
+
+Server checks:
+
+Signature
+Expiry
+Claims
+Example Payload
+{
+  "userId": 10,
+  "role": "admin",
+  "exp": 1714300000
+}
+Advantages
+Stateless authentication
+No session storage required
+Good for APIs
+Expiry supported
+Works well with mobile/SPAs
+Disadvantages
+Hard to revoke immediately
+Token theft risk if stored badly
+Payload readable (not encrypted by default)
+Best Use Cases
+REST APIs
+Mobile apps
+React / Angular frontends
+Microservices
+4. OAuth 2.0
+What is OAuth 2.0?
+
+OAuth 2.0 is an authorization framework that lets users grant apps limited access without sharing passwords.
+
+Example
+
+Instead of giving your password to a third-party app:
+
+Bad:
+Give Gmail password to App
+
+Use OAuth:
+
+Good:
+Login with Google
+Approve access
+App gets token
+Main Roles
+Resource Owner = User
+Client = App
+Authorization Server = Login provider
+Resource Server = API
+Common Flow (Authorization Code Flow)
+Step 1
+
+User clicks:
+
+Login with Google
+Step 2
+
+Redirect user to provider:
+
+GET /authorize?
+client_id=abc
+redirect_uri=https://app.com/callback
+response_type=code
+scope=email profile
+Step 3
+
+User logs in with provider.
+
+Step 4
+
+Provider asks consent:
+
+Allow access to profile/email?
+Step 5
+
+Redirect back:
+
+https://app.com/callback?code=xyz123
+Step 6
+
+Backend exchanges code:
+
+POST /token
+grant_type=authorization_code
+code=xyz123
+client_id=abc
+client_secret=secret
+Step 7
+
+Provider returns:
+
+{
+  "access_token": "abc123",
+  "refresh_token": "xyz789",
+  "expires_in": 3600
+}
+Step 8
+
+App uses token:
+
+Authorization: Bearer access_token
+Advantages
+User password not shared with app
+Fine-grained permissions (scopes)
+Revocable access
+Token expiry
+Best for third-party login
+Disadvantages
+More complex than JWT/basic auth
+Multiple redirects
+Token lifecycle management required
+Best Use Cases
+Login with Google
+Login with GitHub
+Microsoft API access
+Enterprise SSO
+Third-party integrations
+5. Comparison Table
+Feature	Basic Auth	JWT	OAuth 2.0
+Sends Password Every Request	Yes	No	No
+Uses Token	No	Yes	Yes
+Third Party Login	No	No	Yes
+Expiry Support	No	Yes	Yes
+Easy to Implement	Very Easy	Medium	Complex
+Best for APIs	Limited	Yes	Yes
+Social Login	No	No	Yes
+Stateless	Yes	Yes	Depends
+6. Real-World Examples
+Basic Auth Example
+
+Internal company API:
+
+Authorization: Basic admin:password
+JWT Example
+
+Your custom e-commerce backend:
+
+Authorization: Bearer eyJhb...
+OAuth Example
+
+Login with:
+
+Google
+GitHub
+Microsoft
+7. When to Use What
+Use Basic Auth When:
+Internal tools
+Temporary scripts
+Small trusted environment
+Use JWT When:
+Building your own auth system
+SPA frontend + backend API
+Mobile apps
+Stateless services
+Use OAuth 2.0 When:
+Social login
+Third-party access
+Enterprise login
+External provider APIs
+8. Interview Summary
+Basic Auth sends username/password each request.
+JWT sends signed tokens after login.
+OAuth 2.0 allows delegated access using provider-issued tokens.
+Important Note
+OAuth 2.0 is a framework.
+JWT is a token format.
+They are not competitors.
+OAuth may use JWT tokens internally.
+Final Recommendation
+
+Modern apps usually use:
+
+JWT for internal auth
+OAuth 2.0 for Google/GitHub login
+Avoid Basic Auth for public apps
+Short Memory Trick
+Basic Auth = Password
+JWT = Token
+OAuth = Permissioned Token Access
+
+
+
+
+
+
+
+
+
+
+
+Question : 
+Even if OAuth avoids sending credentials every request, don’t we still send credentials once to get the token? What if that moment is compromised?
+
+Short Answer
+
+Yes, there is always an initial trust moment.
+OAuth’s goal is to reduce exposure, limit blast radius, and separate credentials from apps.
+
+It does not eliminate the need for trust.
+
+Important Correction
+
+You said:
+
+clientId and password
+
+That depends on the flow.
+
+In OAuth, there are multiple credential types:
+1. User credentials
+
+User logs into Google directly.
+
+2. Client credentials
+
+App identifies itself using:
+
+client_id
+client_secret
+3. PKCE flow
+
+Modern public apps (mobile / SPA) often do not use client_secret.
+
+They use:
+
+client_id + code_verifier + redirect_uri
+
+So not every OAuth flow sends a password-like secret.
+
+Your Security Concern: “What if intercepted once?”
+
+That is exactly why OAuth uses multiple protections.
+
+How OAuth Reduces Risk
+1. HTTPS / TLS
+
+All token exchanges happen over encrypted HTTPS.
+
+So credentials/token requests are encrypted in transit.
+
+Attacker on network should not see plaintext.
+2. Short-Lived Authorization Code
+
+Instead of sending token directly via browser:
+
+User login → temporary code (few minutes)
+
+Then backend exchanges it securely.
+
+If stolen, often useless quickly.
+
+3. PKCE
+
+Even if attacker steals the auth code, they still need:
+
+code_verifier
+
+Without it, token exchange fails.
+
+This protects mobile/SPAs.
+
+4. Scoped Tokens
+
+Even if access token stolen:
+
+May only read profile
+May expire in 1 hour
+
+Not full account password.
+
+5. Revocation
+
+Provider can revoke token without changing user password.
+
+Compare to Basic Auth
+If Basic Auth credentials stolen once:
+username + password compromised
+
+Attacker may get full account until password reset.
+
+If OAuth token stolen once:
+limited token compromised
+
+May expire soon and be revoked.
+
+That’s a huge difference.
+
+Real Example
+
+Suppose malicious Wi-Fi intercept attempt.
+
+Basic Auth
+Authorization: Basic admin:realpassword
+
+If exposed once, attacker has real credentials.
+
+OAuth
+
+During login:
+
+User enters password on Google page over HTTPS.
+
+Your app never gets password.
+
+Then app receives:
+
+temporary code / access token
+
+Less powerful than password.
+
+Important Truth
+
+No auth system survives total device compromise.
+
+If malware owns the browser/device:
+
+passwords can be stolen
+tokens can be stolen
+sessions can be hijacked
+
+OAuth mainly protects against:
+
+credential sharing with third-party apps
+over-privileged access
+long-term reuse of leaked secrets
+Developer Mental Model
+Password = master key
+OAuth token = temporary room key
+
+Even if room key stolen once, attacker doesn’t own the building.
+
+Best Practice Today
+
+Use:
+
+Authorization Code Flow + PKCE
+HTTPS only
+Short-lived access tokens
+Refresh token rotation
+Secure cookie storage
+Scope minimization
