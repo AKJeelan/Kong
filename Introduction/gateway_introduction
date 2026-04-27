@@ -1,0 +1,62 @@
+1. What is API Gateway?
+
+An API Gateway is a server that sits between clients and backend services.
+
+It acts as a single entry point for:
+
+Web apps
+Mobile apps
+Third-party clients
+Internal services
+
+Instead of exposing every microservice directly, clients communicate only with the API Gateway.
+
+Without API Gateway
+Client → Catalog Service
+Client → User Service
+Client → Payment Service
+Client → Order Service
+
+Problems:
+
+Too many endpoints
+Hard to secure
+Hard to manage auth
+Hard to monitor
+Tight coupling
+With API Gateway
+Client → API Gateway → Services
+
+Benefits:
+
+One public endpoint
+Centralized security
+Load balancing
+Authentication
+Logging
+Monitoring
+Routing
+
+
+
+2. Why API Gateway is Needed
+In Microservices Architecture
+
+When an application has many services:
+
+User Service
+Product Service
+Cart Service
+Payment Service
+Notification Service
+
+Clients should not directly call each service.
+
+API Gateway solves:
+Problem	Solution
+Too many APIs	Single entry point
+Authentication repeated everywhere	Centralized auth
+No monitoring	Central logs
+Direct exposure	Hidden internal services
+Traffic spikes	Rate limiting
+Scaling issues	Load balancing

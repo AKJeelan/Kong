@@ -1,0 +1,45 @@
+3. Kong Gateway Overview
+
+Kong Gateway is an open-source, cloud-native API Gateway built on NGINX + Lua.
+
+Used for:
+
+Traffic management
+Security
+API authentication
+Rate limiting
+Logging
+Monitoring
+Load balancing
+Why Kong is Popular
+High performance
+Plugin architecture
+Kubernetes friendly
+Works with Docker
+Enterprise support
+Easy declarative config
+4. Reverse Proxy vs API Gateway
+Reverse Proxy
+
+A reverse proxy forwards client requests to backend servers.
+
+Example:
+
+Client → NGINX → Backend
+
+Used for:
+
+SSL termination
+Static file serving
+Load balancing
+API Gateway
+
+API Gateway is an advanced reverse proxy with:
+
+Authentication
+Rate limiting
+Metrics
+Plugins
+Request transformation
+Developer portal
+Kong = Reverse Proxy + Smart Features

@@ -1,0 +1,11 @@
+6. Kong Architecture
+
+Client
+   ↓
+Kong Gateway
+   ↓
+Routes
+   ↓
+Services
+   ↓
+Upstream Targets

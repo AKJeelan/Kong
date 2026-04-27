@@ -1,0 +1,22 @@
+7. DB-less Mode (Declarative Mode)
+
+Kong can run without PostgreSQL database.
+
+Configuration stored in YAML file.
+
+Example:
+
+_format_version: "3.0"
+
+services:
+  - name: echo-service
+    url: http://localhost:8081
+    routes:
+      - name: echo-route
+        paths:
+          - /echo
+Advantages
+Easy deployment
+Git version control
+Fast startup
+Great for Docker/Kubernetes

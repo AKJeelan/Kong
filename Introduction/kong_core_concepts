@@ -1,0 +1,41 @@
+5. Kong Core Concepts
+Service
+
+Represents backend API.
+
+Example:
+
+service:
+  name: user-service
+  url: http://localhost:3001
+Route
+
+Defines path exposed to users.
+
+route:
+  path: /users
+
+Flow:
+
+Client hits /users
+Kong forwards to user-service
+Consumer
+
+Represents API user/client/app.
+
+Used in:
+
+API keys
+ACL
+Authentication
+Plugin
+
+Adds features.
+
+Examples:
+
+rate-limiting
+key-auth
+basic-auth
+cors
+prometheus
