@@ -1,0 +1,11 @@
+The JWT plugin lets you verify requests containing HS256 or RS256 signed JSON Web Tokens, as specified in RFC 7519.
+
+When you enable this plugin, it grants JWT credentials (public and secret keys) to each of your Consumers, which must be used to sign their JWTs. You can then pass a token through any of the following:
+
+1. A query string parameter
+2. A cookie
+3. HTTP request headers
+
+Kong Gateway will either proxy the request to your upstream services if the token’s signature is verified, or discard the request if not. Kong Gateway can also perform verifications on some of the registered claims of RFC 7519 (exp and nbf). If Kong Gateway finds multiple tokens that differ - even if they are valid - the request will be rejected to prevent JWT smuggling.
+
+More details : https://developer.konghq.com/plugins/jwt/#using-the-plugin
